@@ -3,8 +3,8 @@
  */
 #include <BleKeyboard.h>
 
-const char* ssid = "RDS-LINK";
-const char* password = "UY9N5PEUSJ6YH";
+const char* ssid = "xxxx";
+const char* password = "xxxx";
 
 #include <SPI.h>
 #include <Wire.h>
