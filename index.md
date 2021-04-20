@@ -1,37 +1,23 @@
-## Welcome to GitHub Pages
+# ESP32-Codek-Macro-KBD
+This is a repository for an ESP32 variant of the Codek Macro Keyboard(Thingiverse). 
 
-You can use the [editor on GitHub](https://github.com/vldfr/ESP32-Codek-Macro-KBD/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Hardware Components:
+- ESP32 (MCU)
+- TP4056 (Li-Ion Battery Charger)
+- Power Switch
+- 3.3v Step-Down Converter (I used one that can go as low as 3.4v on the input side)
+- 10 Mechanical Keyboard Switches (I used ones from a broken mechanical Keyboard)
+- SSD1306 OLED display (0.96")
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![Codek Picture](https://github.com/vldfr/ESP32-Codek-Macro-KBD/blob/main/images/20210420_141405.jpg?raw=true)
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+# Credits
+I want to thank Tanmay Burde for the great design that inspired me to make this SW/HW adaptation to his published design on Thingiverse which I found during my search for a nice case for a Macro Keyboard. The fact that it also has a built-in OLED display mount just made it better and made me want to build it, and with his approval I started this Repo after developing a first stable working version.
 
-# Header 1
-## Header 2
-### Header 3
+The Thingiverse link:
+https://www.thingiverse.com/thing:4539723
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/vldfr/ESP32-Codek-Macro-KBD/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## License
+The license is in a sepparate file, but I want to mention it here as well. This work is published under the MIT license and can be used by giving proper credits.
