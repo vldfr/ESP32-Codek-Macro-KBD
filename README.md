@@ -9,6 +9,9 @@ Hardware Components:
 - 10 Mechanical Keyboard Switches (I used ones from a broken mechanical Keyboard)
 - SSD1306 OLED display (0.96")
 
+![Codek Picture](images/20210420_141405.jpg)
+
+
 
 # Credits
 I want to thank Tanmay Burde for the great design that inspired me to make this SW/HW adaptation to his published design on Thingiverse which I found during my search for a nice case for a Macro Keyboard. The fact that it also has a built-in OLED display mount just made it better and made me want to build it, and with his approval I started this Repo after developing a first stable working version.
