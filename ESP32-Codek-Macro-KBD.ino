@@ -3,13 +3,12 @@
  */
 #include <BleKeyboard.h>
 
-const char* ssid = "xxxx";
-const char* password = "xxxx";
-
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+
+#include "WiFipass.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
@@ -78,6 +77,26 @@ unsigned char bluetooth_icon16x16[] =
   0b11111100, 0b00111111, // ######    ######
 };
 
+ unsigned char speak_icon16x16[] =
+{
+  0b00111111, 0b11111100, //   ############  
+  0b01111111, 0b11111110, //  ############## 
+  0b11111111, 0b11111111, // ################
+  0b11110000, 0b00001111, // ####        ####
+  0b11100000, 0b00000111, // ###          ###
+  0b11100000, 0b00000111, // ###          ###
+  0b11100000, 0b00000111, // ###          ###
+  0b11100000, 0b00000111, // ###          ###
+  0b11100000, 0b00000111, // ###          ###
+  0b11100000, 0b00000111, // ###          ###
+  0b11110000, 0b00001111, // ####        ####
+  0b11110001, 0b11111110, // ####   ######## 
+  0b01111011, 0b11111100, //  #### ########  
+  0b00111111, 0b11111000, //   ###########   
+  0b00011110, 0b00000000, //    ####         
+  0b00001100, 0b00000000, //     ##          
+};
+
 BleKeyboard bleKeyboard("vldfr's CODEK", "vldfr Tech", 100);
 
 #define NUM_BTN 10
@@ -90,7 +109,7 @@ const int button_pins[10] = {
 int button_states[10];
 int last_button_states[10]={LOW,LOW,LOW,LOW,LOW,LOW,LOW,LOW,LOW,LOW};
 unsigned long lastDebounceTime[10] = {0};
-unsigned long debounceDelay = 50;
+unsigned long debounceDelay = 40;
 
 unsigned long maxEl(unsigned long arr[], int nr){
   unsigned long m = 0;
@@ -132,6 +151,8 @@ bool is_mediaKey[][10] = {{
 
 unsigned char *modeIcon[] = {
   home_icon16x16
+//  ,
+//  speak_icon16x16
 };
 
 String modeName[] = {
@@ -143,6 +164,7 @@ int current_mode=0;
 bool first_display = false;
 
 bool displaysLogs = false;
+
 
 void setup() {
 //  Serial.begin(115200);
@@ -169,7 +191,7 @@ void setup() {
   bleKeyboard.begin();
   display.println("Started BLE..");
   display.display();
-
+  
 }
 
 void loop() {
@@ -187,6 +209,7 @@ void loop() {
           button_states[i] = reading;
     
           if (button_states[i] == HIGH) {
+            
             if(bleKeyboard.isConnected()){
               if(is_mediaKey[current_mode][i])
                 bleKeyboard.write(media[current_mode][i]);
@@ -200,7 +223,7 @@ void loop() {
     last_button_states[i] = reading;
   }
   
-  delay(5);
+  delay(2);
 }
 
 void displayConnectionState(){
