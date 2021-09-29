@@ -117,6 +117,8 @@ unsigned long maxEl(unsigned long arr[], int nr){
   return m;
 }
 
+
+
 const uint8_t *media[][10] = {{
   KEY_MEDIA_PLAY_PAUSE,
   KEY_MEDIA_MUTE,
@@ -124,11 +126,24 @@ const uint8_t *media[][10] = {{
   0,
   KEY_MEDIA_VOLUME_UP,
   0,
-  KEY_MEDIA_NEXT_TRACK,
+  0, //KEY_MEDIA_NEXT_TRACK,
   0,
   0,
   0
-}};
+},
+{
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+}
+};
 
 uint8_t normal[][10] = {{
   0,
@@ -141,27 +156,64 @@ uint8_t normal[][10] = {{
   KEY_LEFT_ARROW,
   KEY_DOWN_ARROW,
   KEY_RIGHT_ARROW
+},
+{
+  KEY_LEFT_SHIFT,
+  'r',
+  't',
+  'w',
+  KEY_F11,
+  'm',
+  0,
+  'a',
+  's',
+  'd'
 }};
 
 bool is_mediaKey[][10] = {{
   1,1,1,0,1,0,1,0,0,0
-}};
+},
+{
+  0,0,0,0,0,0,0,0,0,0
+  }};
+
+bool is_pressDownKey[][10] = {{
+  0,0,0,0,0,0,0,0,0,0
+},
+{
+  1,1,1,1,0,1,0,1,1,1
+  }};
+
 
 unsigned char *modeIcon[] = {
-  home_icon16x16
-//  ,
-//  speak_icon16x16
+  home_icon16x16,
+  speak_icon16x16
 };
 
 String modeName[] = {
-  "Home"
+  "Home",
+  "BLACK DESERT"
+};
+
+String modeKeyDisplay[] = {
+  "pm-u+s~<d>",
+  "^RTWbM~ASD"
 };
 
 int current_mode=0;
+const int mode_nr=2;
 
 bool first_display = false;
 
 bool displaysLogs = false;
+
+
+void cycleModesForward(int amount=1){
+  if(current_mode<mode_nr-1)
+    current_mode++;
+  else
+    current_mode = 0;
+}
 
 
 void setup() {
@@ -172,7 +224,7 @@ void setup() {
   for(int i = 0;i<NUM_BTN;i++){
     pinMode(button_pins[i], INPUT_PULLUP);  
   }
-  
+
 
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { 
 //    Serial.println(F("SSD1306 allocation failed"));
@@ -190,38 +242,6 @@ void setup() {
   display.println("Started BLE..");
   display.display();
   
-}
-
-void loop() {
-  displayInterface();
-  
-  
-  for(int i = 0;i<NUM_BTN;i++){
-      int reading = !digitalRead(button_pins[i]);
-      if (reading != last_button_states[i]) {
-        lastDebounceTime[i] = millis();
-      }
-
-      if ((millis() - lastDebounceTime[i]) > debounceDelay) {
-          if (reading != button_states[i]) {
-          button_states[i] = reading;
-    
-          if (button_states[i] == HIGH) {
-            
-            if(bleKeyboard.isConnected()){
-              if(is_mediaKey[current_mode][i])
-                bleKeyboard.write(media[current_mode][i]);
-              else
-                bleKeyboard.write(normal[current_mode][i]);
-            }
-          }
-        }
-      }
-      
-    last_button_states[i] = reading;
-  }
-  
-  delay(2);
 }
 
 void displayConnectionState(){
@@ -257,7 +277,7 @@ void displayKbd(){
       display.setTextColor(BLACK, WHITE);
     else
       display.setTextColor(WHITE, BLACK);
-    display.print(" "+(String)i+" ");
+    display.print(" "+(String)modeKeyDisplay[current_mode][i]+" ");
   }
   
 }
@@ -272,4 +292,70 @@ void displayInterface(){
     
     display.display();
   }
+}
+
+void loop() {
+  displayInterface();
+  
+  
+  for(int i = 0;i<NUM_BTN;i++){
+      int reading = !digitalRead(button_pins[i]);
+      if (reading != last_button_states[i]) {
+        lastDebounceTime[i] = millis();
+      }
+
+      if ((millis() - lastDebounceTime[i]) > debounceDelay) {
+          if (reading != button_states[i]) {
+          button_states[i] = reading;
+    
+          if (button_states[i] == HIGH) {
+            if(i==6 && 
+                button_states[0]==LOW && 
+                button_states[1]==LOW && 
+                button_states[2]==LOW && 
+                button_states[3]==LOW && 
+                button_states[4]==LOW && 
+                button_states[5]==LOW && //WITHOUT 6
+                button_states[7]==LOW && 
+                button_states[8]==LOW && 
+                button_states[9]==LOW){
+              cycleModesForward();
+            }
+            else if(bleKeyboard.isConnected()){
+              if(!is_pressDownKey[current_mode][i]){
+                if(is_mediaKey[current_mode][i])
+                  bleKeyboard.write(media[current_mode][i]);
+                else
+                  bleKeyboard.write(normal[current_mode][i]);
+              }
+              else{
+                if(is_mediaKey[current_mode][i])
+                  bleKeyboard.press(media[current_mode][i]);
+                else
+                  bleKeyboard.press(normal[current_mode][i]);
+              }
+              
+            }
+          }
+          else if(button_states[i] == LOW){
+            if(i==6){
+//              cycleModesForward(); //NO NEED ON RELEASE
+            }
+            else if(bleKeyboard.isConnected()){
+              if(is_pressDownKey[current_mode][i]){
+                if(is_mediaKey[current_mode][i])
+                  bleKeyboard.release(media[current_mode][i]);
+                else
+                  bleKeyboard.release(normal[current_mode][i]);
+              }
+              
+            }
+          }
+        }
+      }
+      
+    last_button_states[i] = reading;
+  }
+  
+  delay(2);
 }
